@@ -55,7 +55,8 @@ Una volta prelevati da Kafka, vengono convertiti secondo i seguenti formati json
 
 
 ### Configurazione
-E' possibile configurare l'ETL_L1 mediante un file di properties, contenente i seguenti campi:
+E' possibile configurare l'ETL_L1 mediante un file di properties, passato contestualmente al lancio del servizio, 
+mediante l'opzione java `-Dproperties.file="Injector.properties"`, contenente i seguenti campi:
 
 - **Kafka.servers**: elenco di coppie `host:port` separate da virgola ',', usato nel caso in cui `OuputAdapter` sia `KafkaOutputChannelAdapter`
 - **Input.topic.pattern.batch**: espressione regolare contenente il pattern per i topic a cui sottoscrivere il servizio per l'ETL batch.  
