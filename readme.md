@@ -1,6 +1,7 @@
 ## Microservizio ETL_L1
 
 Il modulo ETL_L1, realizzato in linguaggio Java, si occupa di effettuare le seguenti operazioni:
+
 - Caricare i dati da topic Kafka
 - Effettuare una trasformazione in formato JSON
 - Effettuare un'elaborazione sul documento
@@ -15,7 +16,7 @@ Es:
 
 `VIN00000000000010,1590971400,Driver10,1000016000,1333001000,12.366820845888245,45.23895419650073,-13.0,20.01,81,4`
 
-Vengono convertiti secondo i seguenti formati json:
+Una volta prelevati da Kafka, vengono convertiti secondo i seguenti formati json:
 
 - Topic _batch_:
 ```
@@ -36,7 +37,7 @@ Vengono convertiti secondo i seguenti formati json:
 }
 ```
 
-- Topic _realtime:
+- Topic _realtime_:
 ```
 {
 	"Timestamp" : 1592526600,
@@ -103,22 +104,27 @@ public interface ITransformerAdapter {
 Classe astratta per la conversione dei messaggi, implementa l'interfaccia `ITransformerAdapter`.
 
 Implementa il metodo `transform()` che opera le seguenti operazioni:
-- Registrazione sul/i topic di input
+
+- Sottoscrizione al/i topic di input
 - Acquisizione messaggi da stream
 - Parsing del messaggio `abstract`
-. Validazione del messaggio
+- Validazione del messaggio
 - Correzione di parametri anomali del messaggio `abstract`
 - Conversione del messaggio `abstract`
 - Pubblicazione del messaggio
 
-Inoltre, i messaggi che vengono ritenuti non validi per errori sul formato vengono scritti sul topic di errore specifico `errorTopic`.
+Inoltre, i messaggi che vengono ritenuti non validi per errori sul formato vengono scritti sul topic di errore specifico
+ `errorTopic`.
 
 ### BatchTransformer
-Estende la class `Transformer` definendo i metodi
+Estende la class `Transformer` definendo i metodi:
+
 - `parse()` lettura dati da CSV
-- `fix()` invalidazione dei dati di posizione non attendibili e sogliatura dell'altitudine
+- `fix()` invalidazione dei dati di posizione non attendibili (`Position.satellites` < 3) e sogliatura dell'altitudine 
+se negativa
 - `convert()` conversione del messaggio nel formato JSON per il ramo batch
 
 ### RealtimeTransformer
-Estende e riutilizza le funzionalità di `BatchTransformer`, ridefinendo il solo metodo
+Estende e riutilizza le funzionalità di `BatchTransformer`, ridefinendo il solo metodo:
+
 - `convert()` conversione del messaggio nel formato JSON per il ramo realtime 
